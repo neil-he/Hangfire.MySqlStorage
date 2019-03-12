@@ -20,6 +20,7 @@ namespace Hangfire.MySql
             InvisibilityTimeout = TimeSpan.FromMinutes(30);
 
             TablesPrefix = DefaultTablesPrefix;
+            NumberOfRecordsInSinglePass = 1000;
         }
 
         public System.Transactions.IsolationLevel? TransactionIsolationLevel { get; set; }
@@ -57,5 +58,6 @@ namespace Hangfire.MySql
         public TimeSpan InvisibilityTimeout { get; set; }
 
         public string TablesPrefix { get; set; }
+        public int NumberOfRecordsInSinglePass { get; set; }
     }
 }

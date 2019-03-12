@@ -14,7 +14,7 @@ namespace Hangfire.MySql
         private static readonly TimeSpan DefaultLockTimeout = TimeSpan.FromSeconds(30);
         private const string DistributedLockKey = "expirationmanager";
         private static readonly TimeSpan DelayBetweenPasses = TimeSpan.FromSeconds(1);
-        private const int NumberOfRecordsInSinglePass = 1000;
+        //private const int NumberOfRecordsInSinglePass = 1000;
 
         private readonly string[] _processedTables;
 
@@ -63,7 +63,7 @@ namespace Hangfire.MySql
                                 removedCount = connection.Execute(
                                     String.Format(
                                         "delete from `{0}` where ExpireAt < @now limit @count;", table),
-                                    new { now = DateTime.UtcNow, count = NumberOfRecordsInSinglePass });
+                                    new { now = DateTime.UtcNow, count = _storageOptions.NumberOfRecordsInSinglePass });
                             }
 
                             Logger.DebugFormat("removed records count={0}", removedCount);
