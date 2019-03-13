@@ -21,6 +21,7 @@ namespace Hangfire.MySql
 
             TablesPrefix = DefaultTablesPrefix;
             NumberOfRecordsInSinglePass = 1000;
+            JobExpireIn = TimeSpan.FromDays(1);
         }
 
         public System.Transactions.IsolationLevel? TransactionIsolationLevel { get; set; }
@@ -59,5 +60,6 @@ namespace Hangfire.MySql
 
         public string TablesPrefix { get; set; }
         public int NumberOfRecordsInSinglePass { get; set; }
+        public TimeSpan JobExpireIn { get; set; }
     }
 }

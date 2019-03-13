@@ -37,7 +37,7 @@ namespace Hangfire.MySql
             QueueCommand(x => 
                 x.Execute(
                     $"update `{_storageOptions.TablesPrefix}Job` set ExpireAt = @expireAt where Id = @id",
-                    new { expireAt = DateTime.UtcNow.Add(expireIn), id = jobId }));
+                    new { expireAt = DateTime.UtcNow.Add(_storageOptions.JobExpireIn), id = jobId }));
         }
         
         public override void PersistJob(string jobId)
