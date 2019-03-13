@@ -41,7 +41,7 @@ namespace Hangfire.MySql.JobQueue
                 
                 try
                 {
-                    using (new MySqlDistributedLock(_storage, "JobQueue", TimeSpan.FromSeconds(30), _options))
+                    using (new MySqlDistributedLock(_storage, "JobQueue", TimeSpan.FromSeconds(30), _options).Acquire())
                     {
                         string token = Guid.NewGuid().ToString();
 

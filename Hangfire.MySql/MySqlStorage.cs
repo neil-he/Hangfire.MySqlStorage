@@ -164,28 +164,28 @@ namespace Hangfire.MySql
         internal T UseTransaction<T>(
             [InstantHandle] Func<MySqlConnection, T> func, IsolationLevel? isolationLevel)
         {
-            using (var tScope = new TransactionScope(TransactionScopeOption.Required,
+            MySqlConnection connection = null;
+            try
+            {
+
+                using (var tScope = new TransactionScope(TransactionScopeOption.Required,
                 new TransactionOptions
                 {
                     IsolationLevel = isolationLevel ?? IsolationLevel.ReadCommitted
                 },
                 TransactionScopeAsyncFlowOption.Enabled))
-            {
-
-                MySqlConnection connection = null;
-
-                try
                 {
+
                     connection = CreateAndOpenConnection();
                     T result = func(connection);
                     tScope.Complete();
 
                     return result;
                 }
-                finally
-                {
-                    ReleaseConnection(connection);
-                }
+            }
+            finally
+            {
+                ReleaseConnection(connection);
             }
         }
 
@@ -217,6 +217,10 @@ namespace Hangfire.MySql
         {
             if (_existingConnection != null)
             {
+                if (_existingConnection.State != ConnectionState.Open)
+                {
+                    _existingConnection.Open();
+                }
                 return _existingConnection;
             }
 
@@ -228,7 +232,8 @@ namespace Hangfire.MySql
 
         internal void ReleaseConnection(IDbConnection connection)
         {
-            if (connection != null && !ReferenceEquals(connection, _existingConnection))
+            if (connection != null && !ReferenceEquals(connection, _existingConnection)
+                && connection.State != ConnectionState.Closed)
             {
                 connection.Dispose();
             }
